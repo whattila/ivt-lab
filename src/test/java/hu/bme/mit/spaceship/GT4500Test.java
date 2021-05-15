@@ -178,4 +178,39 @@ public class GT4500Test {
     assertEquals(false, result);
   }
 
+  @Test
+  public void fire_SINGLE_firstTime_allEmpty() {
+    // Arrange
+    // Set the behavior of the mocks:
+    // both's isEmpty() return true.
+    when(mockPrimary.isEmpty()).thenReturn(true);
+    when(mockSecondary.isEmpty()).thenReturn(true);
+
+    // Act
+    ship.fireTorpedo(FiringMode.SINGLE);
+
+    // Assert
+    // Verifying the mocks: neither's fire(1) was called.
+    verify(mockPrimary, never()).fire(1);
+    verify(mockSecondary, never()).fire(1);
+  }
+
+  @Test
+  public void fire_SINGLE_first_depleted() {
+  // Arrange
+  // Set the behavior of the mocks: the first returns false, then true, when isEmpty() is called
+  // The second always returns true.
+  when(mockPrimary.isEmpty()).thenReturn(false).thenReturn(true);
+  when(mockSecondary.isEmpty()).thenReturn(true);
+
+  // Act
+  ship.fireTorpedo(FiringMode.SINGLE);
+  ship.fireTorpedo(FiringMode.SINGLE);
+
+  // Assert
+  // Verifying the mocks: mockPrimary.isEmpty() was called twice, mockSecondary.isEmpty() was called once
+  verify(mockPrimary, times(2)).isEmpty();
+  verify(mockSecondary, times(1)).isEmpty();
+  }
+
 }
